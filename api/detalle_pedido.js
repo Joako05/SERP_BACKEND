@@ -1,63 +1,79 @@
 const express = require('express');
 const router = express.Router();
-const {conexion} = require('../bd/conexion');
+const { conexion } = require('../bd/conexion');
 
-router.get("/", function(req, res, next){
+
+// GET todos
+router.get("/", (req, res) => {
+    conexion.query("SELECT * FROM detalle_pedidos", (err, result) => {
+        if (err) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        res.json({ status: "ok", detalle: result });
+    });
+});
+
+
+// GET por id
+router.get("/:id", (req, res) => {
     const { id } = req.params;
-    const sql = "SELECT * FROM detalle_pedido WHERE  = ?";
-        conexion.query(sql, [id], function(error, result) {
-            if (error)return res.status(500).send("Ocurrió un error");
-            res.json({
-                status: "ok", 
-                Detalles_de_Pedido: result 
-            });
-        });
-})
 
-router.post("/", function (req, res, next){
-    const { id_pedido, id_producto, cantidad, precio_unitario } = req.body;
-        
-    const sql = `INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ? )`
-        
-        conexion.query(sql, [id_pedido, id_producto, cantidad, precio_unitario], function(error, result){
-                if (error) {
-                    console.error(error);
-                    return res.send("Ocurrio un error");
-                }
-                res.json({status:"ok"})
-        })
-})
+    const sql = "SELECT * FROM detalle_pedidos WHERE id_detalle = ?";
 
-router.put("/", function(req, res, next){
-    const { id_detalle } = req.query;
+    conexion.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        if (result.length === 0) return res.status(404).json({ error: "Detalle no encontrado" });
+
+        res.json({ status: "ok", detalle: result[0] });
+    });
+});
+
+
+// POST crear
+router.post("/", (req, res) => {
     const { id_pedido, id_producto, cantidad, precio_unitario } = req.body;
 
-    const sql = `UPDATE detalle_pedido SET id_pedido = ?, id_producto = ?, cantidad = ?, precio_unitario = ?  WHERE id_detalle = ?`;
-    conexion.query(
-        sql,
-        [id_pedido, id_producto, cantidad, precio_unitario],
-        function(error,result){
-            if (error) {
-                console.error(error);
-                res.status(500).send("ocurrio un error")
-            } 
-            res.json({status:"ok"})
-        }
-    )
-})
+    const sql = `INSERT INTO detalle_pedidos 
+                (id_pedido, id_producto, cantidad, precio_unitario)
+                VALUES (?, ?, ?, ?)`;
 
-router.delete("/", function(req, res, next){
-    const { id } = req.query;
+    conexion.query(sql, [id_pedido, id_producto, cantidad, precio_unitario], (err, result) => {
+        if (err) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        res.json({ status: "ok", id_detalle: result.insertId });
+    });
+});
 
-    const sql = "DELETE FROM detalle_pedido WHERE id_detalle = ?";
 
-    conexion.query(sql, [id_detalle], function(error, result){
-        if(error) {
-            console.error(error);
-            return res.status(500).send("Ocurrio un error");
-        }
-        res.json({status:"ok"})
-    })
-})
+// PUT actualizar
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const { id_pedido, id_producto, cantidad, precio_unitario } = req.body;
+
+    const sql = `UPDATE detalle_pedidos
+                 SET id_pedido = ?, id_producto = ?, cantidad = ?, precio_unitario = ?
+                 WHERE id_detalle = ?`;
+
+    conexion.query(sql, [id_pedido, id_producto, cantidad, precio_unitario, id], (err, result) => {
+        if (err) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        if (result.affectedRows === 0) return res.status(404).json({ error: "Detalle no encontrado" });
+
+        res.json({ status: "ok" });
+    });
+});
+
+
+// DELETE
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
+
+    const sql = "DELETE FROM detalle_pedidos WHERE id_detalle = ?";
+
+    conexion.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+
+        if (result.affectedRows === 0)
+            return res.status(404).json({ error: "Detalle no encontrado" });
+
+        res.json({ status: "ok" });
+    });
+});
 
 module.exports = router;

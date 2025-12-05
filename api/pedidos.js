@@ -1,63 +1,85 @@
 const express = require('express');
 const router = express.Router();
-const {conexion} = require('../bd/conexion');
+const { conexion } = require('../bd/conexion');
 
-router.get("/", function(req, res, next){
+
+// GET todos los pedidos
+router.get("/", (req, res) => {
+    const sql = "SELECT * FROM pedidos";
+
+    conexion.query(sql, (error, result) => {
+        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+
+        res.json({ status: "ok", pedidos: result });
+    });
+});
+
+
+// GET pedido por id
+router.get("/:id", (req, res) => {
     const { id } = req.params;
-    const sql = "SELECT * FROM pedidos WHERE  = ?";
-        conexion.query(sql, [id], function(error, result) {
-            if (error)return res.status(500).send("Ocurrió un error");
-            res.json({
-                status: "ok", 
-                Pedido: result 
-            });
-        });
-})
 
-router.post("/", function (req, res, next){
-    const { id_usuario, fecha, total, estado} = req.body;
-        
-    const sql = `INSERT INTO pedidos (id_usuario, fecha, total, estado) VALUES (?, ?, ?, ? )`
-        
-        conexion.query(sql, [id_usuario, fecha, total, estado], function(error, result){
-                if (error) {
-                    console.error(error);
-                    return res.send("Ocurrio un error");
-                }
-                res.json({status:"ok"})
-        })
-})
+    const sql = "SELECT * FROM pedidos WHERE id_pedido = ?";
 
-router.put("/", function(req, res, next){
-    const { id_pedido } = req.query;
-    const {id_usuario, fecha, total, estado} = req.body;
+    conexion.query(sql, [id], (error, result) => {
+        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        if (result.length === 0) return res.status(404).json({ status: "error", error: "Pedido no encontrado" });
 
-    const sql = `UPDATE pedidos SET id_usuario = ?, fecha = ?, total = ?, estado = ?  WHERE id_pedido = ?`;
-    conexion.query(
-        sql,
-        [id_usuario, fecha, total, estado],
-        function(error,result){
-            if (error) {
-                console.error(error);
-                res.status(500).send("ocurrio un error")
-            } 
-            res.json({status:"ok"})
-        }
-    )
-})
+        res.json({ status: "ok", pedido: result[0] });
+    });
+});
 
-router.delete("/", function(req, res, next){
-    const { id } = req.query;
+
+// POST crear pedido
+router.post("/", (req, res) => {
+    const { id_usuario, fecha, total } = req.body;
+
+    if (!id_usuario || !fecha || !total) {
+        return res.status(400).json({ status: "error", error: "Faltan campos" });
+    }
+
+    const sql = "INSERT INTO pedidos (id_usuario, fecha, total) VALUES (?, ?, ?)";
+
+    conexion.query(sql, [id_usuario, fecha, total], (error, result) => {
+        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+
+        res.json({ status: "ok", id_pedido: result.insertId });
+    });
+});
+
+
+// PUT actualizar pedido
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const { id_usuario, fecha, total } = req.body;
+
+    const sql = "UPDATE pedidos SET id_usuario = ?, fecha = ?, total = ? WHERE id_pedido = ?";
+
+    conexion.query(sql, [id_usuario, fecha, total, id], (error, result) => {
+        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+
+        if (result.affectedRows === 0)
+            return res.status(404).json({ status: "error", error: "Pedido no encontrado" });
+
+        res.json({ status: "ok" });
+    });
+});
+
+
+// DELETE pedido
+router.delete("/:id", (req, res) => {
+    const { id } = req.params;
 
     const sql = "DELETE FROM pedidos WHERE id_pedido = ?";
 
-    conexion.query(sql, [id_pedido], function(error, result){
-        if(error) {
-            console.error(error);
-            return res.status(500).send("Ocurrio un error");
-        }
-        res.json({status:"ok"})
-    })
-})
+    conexion.query(sql, [id], (error, result) => {
+        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+
+        if (result.affectedRows === 0)
+            return res.status(404).json({ status: "error", error: "Pedido no encontrado" });
+
+        res.json({ status: "ok" });
+    });
+});
 
 module.exports = router;
