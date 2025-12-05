@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { hashPass, verificarPass, generarToken } = require('@damianegreco/hashpass');
 const { conexion } = require('../bd/conexion');
 
-const TOKEN_SECRET = "ollas";
+const TOKEN_SECRET = "royalprestige";
 
 // Verificar si correo ya existe
 const checkUsuario = (correo) => {
