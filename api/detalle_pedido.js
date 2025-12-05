@@ -51,7 +51,7 @@ router.delete("/", function(req, res, next){
 
     const sql = "DELETE FROM detalle_pedido WHERE id_detalle = ?";
 
-    conexion.query(sql, [idPersona], function(error, result){
+    conexion.query(sql, [id_detalle], function(error, result){
         if(error) {
             console.error(error);
             return res.status(500).send("Ocurrio un error");
