@@ -3,9 +3,7 @@ const router = express.Router();
 const { conexion } = require('../bd/conexion');
 
 
-// ---------------------------------------------------
-// GET: Obtener todas las categorías
-// ---------------------------------------------------
+// GET: Obtener toodas las categorias
 router.get("/", (req, res) => {
     const sql = "SELECT * FROM categorias";
 
@@ -23,9 +21,7 @@ router.get("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// GET: Obtener categoría por ID
-// ---------------------------------------------------
+// GET: Obtener cada categoria por od
 router.get("/:id", (req, res) => {
     const { id } = req.params;
 
@@ -49,9 +45,7 @@ router.get("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// POST: Crear nueva categoría
-// ---------------------------------------------------
+// POST: Crear nueva categoria
 router.post("/", (req, res) => {
     const { nombre, descripcion } = req.body;
 
@@ -75,9 +69,7 @@ router.post("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// PUT: Actualizar categoría por ID
-// ---------------------------------------------------
+// PUT: Actualizar categoria por id
 router.put("/:id", (req, res) => {
     const { id } = req.params;
     const { nombre, descripcion } = req.body;
@@ -103,9 +95,7 @@ router.put("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// DELETE: Eliminar categoría por ID
-// ---------------------------------------------------
+// DELETE: Eliminar por id
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
 

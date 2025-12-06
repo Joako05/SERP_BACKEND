@@ -6,9 +6,7 @@ const { conexion } = require('../bd/conexion');
 const TOKEN_SECRET = "ollas";
 
 
-// ---------------------------------------------------
-// GET: todos los usuarios (solo admin)
-// ---------------------------------------------------
+// GET: todos los usaurios (solo admin puede gacerlo)
 router.get("/", (req, res) => {
     const sql = "SELECT id_usuario, nombre, apellido, correo, telefono, direccion, rol FROM usuarios";
 
@@ -20,9 +18,7 @@ router.get("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
 // GET usuario por id
-// ---------------------------------------------------
 router.get("/:id", (req, res) => {
     const { id } = req.params;
 
@@ -37,13 +33,11 @@ router.get("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
 // POST registro
-// ---------------------------------------------------
 router.post("/", (req, res) => {
     const { nombre, apellido, correo, contraseña, telefono, direccion, rol } = req.body;
 
-    // verificar duplicado
+    // verificar duplcado
     conexion.query("SELECT id_usuario FROM usuarios WHERE correo = ?", [correo], (err, result) => {
         if (err) return res.status(500).json({ error: "Error interno" });
 
@@ -69,9 +63,7 @@ router.post("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
 // POST login
-// ---------------------------------------------------
 router.post("/login", (req, res) => {
     const { correo, contraseña } = req.body;
 
@@ -101,9 +93,7 @@ router.post("/login", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// PUT actualizar usuario
-// ---------------------------------------------------
+// PUT actualizar usaurio
 router.put("/:id", (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, telefono, direccion, rol } = req.body;
@@ -123,9 +113,7 @@ router.put("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
 // DELETE usuario
-// ---------------------------------------------------
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
 

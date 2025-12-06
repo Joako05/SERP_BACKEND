@@ -3,9 +3,7 @@ const router = express.Router();
 const { conexion } = require('../bd/conexion');
 
 
-// ---------------------------------------------------
 // GET: Obtener todos los productos
-// ---------------------------------------------------
 router.get("/", (req, res) => {
     const sql = "SELECT * FROM productos";
 
@@ -20,9 +18,7 @@ router.get("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// GET: Obtener producto por ID
-// ---------------------------------------------------
+// GET: Obtener producto por id
 router.get("/:id", (req, res) => {
     const { id } = req.params;
 
@@ -40,9 +36,7 @@ router.get("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
 // POST: Crear producto
-// ---------------------------------------------------
 router.post("/", (req, res) => {
     const { nombre, descripcion, precio, stock, id_categoria } = req.body;
 
@@ -61,9 +55,7 @@ router.post("/", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// PUT: Actualizar producto por ID
-// ---------------------------------------------------
+// PUT: Actualizar producto por iud
 router.put("/:id", (req, res) => {
     const { id } = req.params;
     const { nombre, descripcion, precio, stock, id_categoria } = req.body;
@@ -84,9 +76,7 @@ router.put("/:id", (req, res) => {
 });
 
 
-// ---------------------------------------------------
-// DELETE: Eliminar producto por ID
-// ---------------------------------------------------
+// DELETE Eliminar producto por id
 router.delete("/:id", (req, res) => {
     const { id } = req.params;
 

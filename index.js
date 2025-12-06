@@ -14,7 +14,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Aquí montamos TODAS las rutas del backend
+// Montae rutas del backend
 app.use('/api', apiRouter);
 
 app.listen(port, () => {
