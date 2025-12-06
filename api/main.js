@@ -1,22 +1,22 @@
 const router = require('express').Router();
 
-// Declara variables
+// Importar subrutas
 const usuariosRouter = require('./usuarios');
-
 const pedidosRouter = require('./pedidos');
-
 const productosRouter = require('./productos');
+const carritoRouter = require('./items_carrito');
+const detalleRouter = require('./detalle_pedido');
+const categoriaRouter = require('./categorias');
+const pagosRouter = require('./pagos');
 
-const carritoRouter = require('./carrito');
+// Usar subrouters
+router.use('/usuarios', usuariosRouter);
+router.use('/pedidos', pedidosRouter);
+router.use('/productos', productosRouter);
+router.use('/carrito', carritoRouter);
+router.use('/detalles', detalleRouter);
+router.use('/categorias', categoriaRouter);
+router.use('/pagos', pagosRouter);
 
-const detalleRouter = require('./detalles');
-
-const categoriaRouter = require('./categorias')
- // Routers
-
- router.use('/usuarios', usuariosRouter);
- router.use('/pedidos', pedidosRouter);
- router.use('/productos', productosRouter);
- router.use('/carrito', carritoRouter);
- router.use('/detalles', detalleRouter );
- router.use('/categorias', categoriaRouter);
+// Exportar router
+module.exports = router;

@@ -30,18 +30,23 @@ router.get("/:id", (req, res) => {
 });
 
 
-// POST crear pedido
 router.post("/", (req, res) => {
-    const { id_usuario, fecha, total } = req.body;
+    const { id_usuario, total } = req.body;
 
-    if (!id_usuario || !fecha || !total) {
+    if (!id_usuario || !total) {
         return res.status(400).json({ status: "error", error: "Faltan campos" });
     }
 
-    const sql = "INSERT INTO pedidos (id_usuario, fecha, total) VALUES (?, ?, ?)";
+    const sql = `
+        INSERT INTO pedidos (id_usuario, fecha, total)
+        VALUES (?, NOW(), ?)
+    `;
 
-    conexion.query(sql, [id_usuario, fecha, total], (error, result) => {
-        if (error) return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+    conexion.query(sql, [id_usuario, total], (error, result) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ status: "error", error: "Ocurrió un error" });
+        }
 
         res.json({ status: "ok", id_pedido: result.insertId });
     });

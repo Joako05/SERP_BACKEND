@@ -1,9 +1,7 @@
-//Corazon del BACKEND
+// Corazón del BACKEND
 const express = require('express');
 const apiRouter = require("./api/main");
-
 const cors = require('cors');
-
 
 const app = express();
 const port = 5000;
@@ -11,11 +9,12 @@ const port = 5000;
 app.use(express.json());
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-    allowedHeaders: ['Content-Type', 'Authorization'] 
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Aquí montamos TODAS las rutas del backend
 app.use('/api', apiRouter);
 
 app.listen(port, () => {
